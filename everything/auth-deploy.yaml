@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: auth-env-vars
+data:
+    AUTH_SERVICE_HOST: auth-port-exposer
+    AUTH_SERVICE_PORT: "8083"
+    
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-port-exposer
+  labels:
+    app: authentication
+spec:
+  type: ClusterIP
+  selector:
+    app: authentication
+  ports:
+    - name: auth-port
+      protocol: TCP
+      port: 8083
+      targetPort: 8083
+      
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deploy
+  labels:
+    app: authentication
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+        - name: auth-cont
+          imagePullPolicy: Always
+          image: t0pn0tch/auth-image
+          ports:
+            - name: auth-port
+              containerPort: 8083
+          env:
+            - name: MYSQL_DATABASE
+              value: websecurity
+            - name: MYSQL_URL
+              value: jdbc:mysql://database-port-exposer:3306/websecurity
+          envFrom:
+            - configMapRef:
+                name: mysql-env-vars
+            - configMapRef:
+                name: gateway-env-vars
+            - configMapRef:
+                name: rabbitmq-env-vars
+            
