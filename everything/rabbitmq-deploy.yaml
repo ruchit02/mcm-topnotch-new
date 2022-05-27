@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mssg-broker-service
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: rabbitmq:3.9.2-management
           ports:
             - name: rabbitmq-broker

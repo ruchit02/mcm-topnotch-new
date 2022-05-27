@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gateway-cont
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: t0pn0tch/gateway-image
           ports:
             - name: gateway-port

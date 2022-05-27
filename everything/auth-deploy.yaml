@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: auth-cont
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: t0pn0tch/auth-image:32
           ports:
             - name: auth-port
